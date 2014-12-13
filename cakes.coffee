@@ -46,17 +46,17 @@ createFeature = (options)->
 			feature = feature+'\n'
 
 		if 'style' in options
-			feature = feature.green.underline.bold
-			
+			feature = feature.green.bold
+
 		message = feature+'\n'
 		unless typeof story[0] is 'function'
-			(message += '\t'+part+'\n' for part in story)
+			message += ('\t'+part for part in story).join('\n')
 		else
 			callback = story[0]
 
 		mocha.describe message, callback
 
-exports.Feature = createFeature(['label', 'whitespace', 'style'])
+exports.Feature = createFeature(['label', 'style'])
 
 ### Start of Scenario ###
 
@@ -98,13 +98,13 @@ exports.Scenario = createScenario(['whitespace', 'label', 'style'])
 ### Beginning of GWTab ###
 
 describeItNest = (command, message, callback, options)->  # nest commands inside a Describe so mixed describe/its will line up on spec output.
-	label = nestLabel options  # get pretty labels for nest.
-	mocha.describe label, ->
-		if command == 'it'
-			mocha.it message, callback
-		else
-			mocha.describe '', ->
-				mocha.describe message, callback
+	# label = nestLabel options  # get pretty labels for nest.
+	# mocha.describe label, -> # remove former nesting functionality for more compactness.
+	if command == 'it'
+		mocha.it message, callback
+	else
+		mocha.describe '', ->
+			mocha.describe message, callback
 
 nestLabel = (options)->  # returns label of nested describes/its
 	label = ''
